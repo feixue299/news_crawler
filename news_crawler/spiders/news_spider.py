@@ -57,7 +57,9 @@ class NewsSpider(scrapy.Spider):
         """.format(count))
 
         for news in jsonresponse["data"]["list"]:
-            yield scrapy.Request("https://new.qq.com/rain/a/{}".format(news["cms_id"]), callback=self.news_detail)
+            qnews = session.query(News).filter(News.source_id=="qq+" + news["cms_id"]).first()
+            if qnews == None:
+                yield scrapy.Request("https://new.qq.com/rain/a/{}".format(news["cms_id"]), callback=self.news_detail)
 
     def news_detail(self, response):
 
