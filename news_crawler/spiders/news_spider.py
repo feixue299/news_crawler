@@ -82,18 +82,14 @@ class NewsSpider(scrapy.Spider):
             news.content = re.search('"abstract":( )*"(.*?)"( )*',response.text).group()[11:].strip().strip('"')
         
         category = re.search('"catalog1":( )*"(.*?)"( )*',response.text).group()[11:].strip().strip('"')
-        qnews = session.query(News).filter(News.source_id==news.source_id).first()
         fcatalog = session.query(Category).filter(Category.category==category).first()
-        if qnews == None:
-            print("add source_id:{}".format(news.source_id))
-            if fcatalog == None:
-                print("create category")
-                session.add(Category(category=category))
-                fcatalog = session.query(Category).filter(Category.category==category).first()
+        print("add source_id:{}".format(news.source_id))
+        if fcatalog == None:
+            print("create category")
+            session.add(Category(category=category))
+            fcatalog = session.query(Category).filter(Category.category==category).first()
 
-            news.category_id = fcatalog.id
-            session.add(news)
-            session.commit()    
-        else:
-            print("已经存在了id:{}".format(qnews.id))
+        news.category_id = fcatalog.id
+        session.add(news)
+        session.commit()
 
