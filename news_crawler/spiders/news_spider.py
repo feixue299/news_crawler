@@ -30,15 +30,14 @@ class NewsSpider(scrapy.Spider):
 
     def news_detail(self, response):
         cleaner = Cleaner(safe_attrs=[True])
-
         sel = Selector(text=response.text, type='html')
         ppath = sel.xpath('//html/body/div/div/div/div/p')
         news = News(content="")
         news.title = sel.xpath('////html/body/div/div/div/div/div/text()').extract_first()
         create_date = re.search('"pubtime":( )*"(.*?)"( )*',response.text).group()[10:].strip().strip('"')
         news.create_date = datetime.strptime(create_date, '%Y-%m-%d %H:%M:%S')
-        news.source = re.search('"cms_id":( )*"(.*?)"( )*',response.text).group()[9:].strip().strip('"')
-        news.source_id = "qq+" + news.source
+        news.source = re.search('"media":( )*"(.*?)"( )*',response.text).group()[8:].strip().strip('"')
+        news.source_id = "qq+" + re.search('"cms_id":( )*"(.*?)"( )*',response.text).group()[9:].strip().strip('"')
         
         for p in ppath.extract():
             np = cleaner.clean_html(p)
