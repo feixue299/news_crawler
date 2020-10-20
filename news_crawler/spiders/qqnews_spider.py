@@ -11,7 +11,7 @@ import re
 from datetime import datetime
 
 
-class NewsSpider(scrapy.Spider):
+class QQNewsSpider(scrapy.Spider):
     name = "qqnews"
     allowed_domains = ["new.qq.com"]
     start_urls = [
